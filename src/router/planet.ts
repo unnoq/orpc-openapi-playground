@@ -1,0 +1,129 @@
+import { ORPCError } from '@orpc/server'
+import { oz } from '@orpc/zod'
+import { z } from 'zod'
+import { planets } from '../data/planet'
+import { authed } from '../orpc'
+import { NewPlanetSchema, PlanetSchema } from '../schemas/planet'
+
+export const listPlanets = authed
+  .route({
+    method: 'GET',
+    path: '/',
+    summary: 'List all planets',
+  })
+  .input(
+    z.object({
+      limit: z.number().int().min(1).max(100).optional(),
+      cursor: z.string().optional(),
+    }),
+  )
+  .output(oz.openapi(z.array(PlanetSchema), { examples: [planets] }))
+  .handler(async (input, context, meta) => {
+    return planets
+  })
+
+export const createPlanet = authed
+  .route({
+    method: 'POST',
+    path: '/',
+    summary: 'Create a planet',
+  })
+  .input(NewPlanetSchema)
+  .output(PlanetSchema)
+  .handler(async (input, context, meta) => {
+    const id = planets.length + 1
+
+    const planet = {
+      id,
+      name: input.name,
+      description: input.description,
+      imageUrl: input.image ? 'https://picsum.photos/200/300' : undefined,
+      creator: context.user,
+    }
+
+    planets.push(planet)
+
+    return planet
+  })
+
+export const findPlanet = authed
+  .route({
+    method: 'GET',
+    path: '/{id}',
+    summary: 'Find a planet',
+  })
+  .input(
+    z.object({
+      id: z.number().int().min(1),
+    }),
+  )
+  .output(PlanetSchema)
+  .handler(async (input, context, meta) => {
+    const planet = planets.find((planet) => planet.id === input.id)
+
+    if (!planet) {
+      throw new ORPCError({
+        code: 'NOT_FOUND',
+        message: 'Planet not found',
+      })
+    }
+
+    return planet
+  })
+
+export const updatePlanet = authed
+  .route({
+    method: 'PUT',
+    path: '/{id}',
+    summary: 'Update a planet',
+  })
+  .input(
+    z.object({
+      id: z.number().int().min(1),
+      name: z.string().optional(),
+      description: z.string().optional(),
+      image: z.string().optional(),
+    }),
+  )
+  .output(PlanetSchema)
+  .handler(async (input, context, meta) => {
+    const planet = planets.find((planet) => planet.id === input.id)
+
+    if (!planet) {
+      throw new ORPCError({
+        code: 'NOT_FOUND',
+        message: 'Planet not found',
+      })
+    }
+
+    planet.name = input.name ?? planet.name
+    planet.description = input.description ?? planet.description
+    planet.imageUrl = input.image ?? planet.imageUrl
+
+    return planet
+  })
+
+export const deletePlanet = authed
+  .route({
+    method: 'DELETE',
+    path: '/{id}',
+    summary: 'Delete a planet',
+    deprecated: true,
+  })
+  .input(
+    z.object({
+      id: z.number().int().min(1),
+    }),
+  )
+  .handler(async (input, context, meta) => {
+    const planet = planets.find((planet) => planet.id === input.id)
+
+    if (!planet) {
+      throw new ORPCError({
+        code: 'NOT_FOUND',
+        message: 'Planet not found',
+      })
+    }
+
+    planets.splice(planets.indexOf(planet), 1)
+  })

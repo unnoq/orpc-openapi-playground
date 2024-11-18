@@ -1,0 +1,27 @@
+{
+  "name": "orpc-openapi-playground",
+  "version": "0.0.0",
+  "description": "oRPC OpenAPI Playground",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --watch src/main.ts",
+    "start": "tsx src/main.ts"
+  },
+  "keywords": ["orpc", "openapi", "playground", "unnoq"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@orpc/openapi": "latest",
+    "@orpc/server": "latest",
+    "@orpc/zod": "latest",
+    "@whatwg-node/server": "^0.9.55",
+    "zod": "^3.23.8"
+  }
+}
