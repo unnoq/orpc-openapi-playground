@@ -6,6 +6,7 @@ import {
   findPlanet,
   listPlanets,
   updatePlanet,
+  updatePlanetImage,
 } from './planet'
 
 export const router = osw.router({
@@ -22,6 +23,7 @@ export const router = osw.router({
     create: createPlanet,
     find: findPlanet,
     update: updatePlanet,
+    updateImage: updatePlanetImage,
     delete: deletePlanet,
   }),
 })

@@ -77,14 +77,7 @@ export const updatePlanet = authed
     path: '/{id}',
     summary: 'Update a planet',
   })
-  .input(
-    z.object({
-      id: z.number().int().min(1),
-      name: z.string().optional(),
-      description: z.string().optional(),
-      image: z.string().optional(),
-    }),
-  )
+  .input(NewPlanetSchema)
   .output(PlanetSchema)
   .handler(async (input, context, meta) => {
     const planet = planets.find((planet) => planet.id === input.id)
@@ -98,7 +91,35 @@ export const updatePlanet = authed
 
     planet.name = input.name ?? planet.name
     planet.description = input.description ?? planet.description
-    planet.imageUrl = input.image ?? planet.imageUrl
+    planet.imageUrl = input.image ? 'https://picsum.photos/200/300' : undefined
+
+    return planet
+  })
+
+export const updatePlanetImage = authed
+  .route({
+    method: 'PATCH',
+    path: '/{id}/image',
+    summary: 'Update a planet image',
+  })
+  .input(
+    z.object({
+      id: z.number().int().min(1),
+      image: oz.file().type('image/*').optional(),
+    }),
+  )
+  .output(PlanetSchema)
+  .handler(async (input, context, meta) => {
+    const planet = planets.find((planet) => planet.id === input.id)
+
+    if (!planet) {
+      throw new ORPCError({
+        code: 'NOT_FOUND',
+        message: 'Planet not found',
+      })
+    }
+
+    planet.imageUrl = input.image ? 'https://picsum.photos/200/300' : undefined
 
     return planet
   })
