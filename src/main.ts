@@ -71,6 +71,8 @@ The example OpenAPI Playground for ORPC.
             <meta
             name="viewport"
             content="width=device-width, initial-scale=1" />
+
+            <link rel="icon" type="image/svg+xml" href="https://orpc.unnoq.com/icon.svg" />
         </head>
         <body>
             <script
