@@ -14,7 +14,7 @@ export const listPlanets = authed
   .input(
     z.object({
       limit: z.number().int().min(1).max(100).optional(),
-      cursor: z.string().optional(),
+      cursor: z.number().int().min(0).default(0),
     }),
   )
   .output(oz.openapi(z.array(PlanetSchema), { examples: [planets] }))

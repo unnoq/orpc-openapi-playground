@@ -18,7 +18,9 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "@orpc/client": "latest",
     "@orpc/openapi": "latest",
+    "@orpc/react": "latest",
     "@orpc/server": "latest",
     "@orpc/zod": "latest",
     "@whatwg-node/server": "^0.9.55",
